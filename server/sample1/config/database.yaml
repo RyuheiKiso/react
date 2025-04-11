@@ -1,0 +1,20 @@
+# SQL Server configuration
+sqlserver:
+  # サーバー名またはIPアドレス
+  server: "localhost"
+  # データベース名
+  database: "SampleDB"
+  # ユーザー名
+  user: "sa"
+  # パスワード
+  password: "your_password"
+  # ポート番号（省略可能、デフォルトは1433）
+  port: 1433
+  # 接続文字列のオプション
+  options:
+    # 暗号化を有効にする
+    encrypt: true
+    # サーバー証明書を信頼する
+    trustServerCertificate: true
+    # 接続タイムアウト（秒）
+    connectionTimeout: 30

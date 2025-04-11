@@ -1,0 +1,6 @@
+/* カラーパレット設定 */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --error-color: #e74c3c;
+}
