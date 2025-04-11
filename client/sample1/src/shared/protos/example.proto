@@ -1,0 +1,7 @@
+// 共通 grpc/quic protoファイル
+syntax = "proto3";
+
+message Example {
+    string id = 1;
+    string name = 2;
+}
