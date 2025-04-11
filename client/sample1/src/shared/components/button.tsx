@@ -11,8 +11,11 @@ interface CustomButtonProps extends ButtonProps {
     triggerKey?: string;
 }
 
+// デフォルトの色を設定
+const defaultColor = "primary";
+
 // CustomButtonコンポーネント
-export default function CustomButton({ label, triggerKey, ...props }: CustomButtonProps) {
+export default function CustomButton({ label, triggerKey, color = defaultColor, ...props }: CustomButtonProps) {
     // ボタン要素への参照
     const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -20,6 +23,7 @@ export default function CustomButton({ label, triggerKey, ...props }: CustomButt
     useEffect(() => {
         // キーボードイベントのハンドラ
         const handleKeyDown = (event: KeyboardEvent) => {
+            // triggerKeyが指定されている場合、指定されたキーが押されたらボタンをクリック
             if (triggerKey && event.key === triggerKey) {
                 event.preventDefault();
                 buttonRef.current?.click();
@@ -36,7 +40,7 @@ export default function CustomButton({ label, triggerKey, ...props }: CustomButt
 
     // ボタンのレンダリング
     return (
-        <Button {...props} ref={buttonRef}>
+        <Button {...props} color={color} ref={buttonRef}>
             {label}
         </Button>
     );
