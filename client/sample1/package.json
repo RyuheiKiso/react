@@ -43,5 +43,14 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/bonjour": "^3.5.13",
+    "@types/graceful-fs": "^4.1.9",
+    "@types/parse-json": "^4.0.2",
+    "@types/prop-types": "^15.7.14",
+    "@types/q": "^1.5.8",
+    "@types/qs": "^6.9.18",
+    "@types/trusted-types": "^2.0.7"
   }
 }
