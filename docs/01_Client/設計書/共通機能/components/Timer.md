@@ -56,4 +56,6 @@ React、Material-UI、タイマー用フック
 - v1.2 suspendTimer関数を追加  
 - v1.3 setCustomTimer関数を追加  
 - v1.4 adjustTimerInterval関数を追加  
-- v1.5 pauseAndResumeTimer関数を追加
+- v1.5 pauseAndResumeTimer関数を追加  
+- v1.6 resetTimer関数を追加  
+- v1.7 pauseTimer関数を修正
