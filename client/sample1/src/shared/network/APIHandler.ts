@@ -1,59 +1,61 @@
 import { setItem, getItem } from '../utils/localStorageUtil';
 
-export async function sendRequest(requestConfig: any): Promise<any> {
-  // 通信処理の共通処理実装
-  return fetch(requestConfig.url, requestConfig);
-}
+const TIMEOUT_MS = 10000;
+const activeControllers: Record<string, AbortController> = {};
 
-export async function getClientIp(): Promise<string> {
-	let clientIp = getItem('clientIp'); // 修正: 型引数を削除
-	if (clientIp) return clientIp;
-	try {
-		const response = await fetch('https://api.ipify.org?format=json');
-		if (!response.ok) {
-			throw new Error('IP取得中にエラーが発生しました');
-		}
-		const data = await response.json();
-		clientIp = data.ip;
-		if (clientIp) { // 修正: 明示的に null チェック
-			setItem('clientIp', clientIp);
-			return clientIp;
-		}
-		throw new Error('IPデータが無効です');
-	} catch (err) {
-		throw new Error('IP取得に失敗しました');
-	}
-}
+// HTTPリクエスト送信
+export async function sendRequest(requestConfig: RequestInit & { url: string }): Promise<Response> {
+  const controller = new AbortController();
+  const id = Math.random().toString(36).substr(2);
+  activeControllers[id] = controller;
 
-export async function monitorLatency(apiEndpoint: string, threshold: number): Promise<void> {
-  const startTime = performance.now();
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    await fetch(apiEndpoint);
-    const latency = performance.now() - startTime;
-    if (latency > threshold) {
-      console.warn(`API latency exceeded threshold: ${latency}ms`);
-    }
+    const res = await fetch(requestConfig.url, { ...requestConfig, signal: controller.signal });
+    clearTimeout(timeout);
+    return res;
   } catch (err) {
-    console.error('Latency monitoring failed:', err);
+    clearTimeout(timeout);
+    throw err;
+  } finally {
+    delete activeControllers[id];
   }
 }
 
-const activeRequests: Record<string, AbortController> = {};
-
-export function cancelRequest(requestId: string): void {
-	const controller = activeRequests[requestId];
-	if (controller) {
-		controller.abort();
-		delete activeRequests[requestId];
-	}
+// 失敗時に再試行
+export async function retryRequest(config: RequestInit & { url: string }, retries = 3): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await sendRequest(config);
+    } catch (err) {
+      if (i === retries) throw err;
+    }
+  }
+  throw new Error('リトライに失敗しました');
 }
 
-export async function cancelAndRetryRequest(requestId: string, requestConfig: any): Promise<any> {
-	cancelRequest(requestId);
-	try {
-		return await sendRequest(requestConfig);
-	} catch (err) {
-		console.error('Failed to retry request:', err);
-		throw new Error('リクエストの再試行に失敗しました');
-	}
+// すべての保留中リクエストをキャンセル
+export function cancelAllRequests(): void {
+  Object.values(activeControllers).forEach(ctrl => ctrl.abort());
+}
+
+// 単一リクエストのキャンセル
+export function cancelRequest(requestId: string): void {
+  activeControllers[requestId]?.abort();
+}
+
+// ログ出力（メトリクス）
+export function logRequestMetrics(endpoint: string, duration: number): void {
+  console.info(`Request to ${endpoint} took ${duration}ms`);
+}
+
+// クライアントIP取得（localStorageUtil を利用）
+export async function getClientIp(): Promise<string> {
+  const cached = getItem<string>('clientIp');
+  if (cached) return cached;
+  const res = await fetch('https://api.ipify.org?format=json');
+  const json = await res.json();
+  const ip = json.ip;
+  setItem('clientIp', ip);
+  return ip;
 }

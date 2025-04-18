@@ -1,6 +1,6 @@
 import React from 'react';
 
-type BodyProps = {
+export type BodyProps = {
   content: React.ReactNode;
 };
 
