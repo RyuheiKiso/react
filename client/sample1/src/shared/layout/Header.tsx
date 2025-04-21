@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getClientIp as fetchClientIp } from '../network/APIHandler';
+import { getClientIp as fetchClientIp } from '../utils/localStorageUtil';
 import { trackInteraction } from '../utils/CommonTracking';
 
 export type HeaderProps = {

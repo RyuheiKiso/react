@@ -1,13 +1,26 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 
-type ProgressBarProps = {
-  progress: number; // 0～100の値
-};
+interface ProgressBarProps {
+    progress: number;
+}
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
   return (
-    <LinearProgress variant="determinate" value={progress} />
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress
+        variant="determinate"
+        value={progress}
+        sx={{
+          height: 24,
+          backgroundColor: '#ddd',
+          '& .MuiLinearProgress-bar': {
+            backgroundColor: '#4caf50',
+          },
+        }}
+      />
+    </Box>
   );
 };
 
