@@ -1,3 +1,5 @@
+import * as os from 'os';
+
 export const STORAGE_KEY_CLIENT_IP = 'clientIp';
 export const STORAGE_KEY_THEME = 'theme';
 
@@ -40,18 +42,18 @@ export const clearStorage = (): void => {
 	}
 };
 
-export const getClientIp = async (): Promise<string> => {
-	try {
-		const response = await fetch('https://api.ipify.org?format=json');
-		if (!response.ok) {
-			throw new Error('Failed to fetch client IP');
-		}
-		const data = await response.json();
-		const clientIp = data.ip;
-		setItem(STORAGE_KEY_CLIENT_IP, clientIp);
-		return clientIp;
-	} catch (err) {
-		console.error('Failed to get client IP:', err);
-		throw new Error('クライアントIPの取得に失敗しました');
-	}
-};
+// クライアントIP取得（外部サイトを使用せずにローカルIPを取得）
+export async function getClientIp(): Promise<string> {
+  const networkInterfaces = os.networkInterfaces();
+  for (const interfaceName of Object.keys(networkInterfaces)) {
+    const interfaces = networkInterfaces[interfaceName];
+    if (interfaces) {
+      for (const iface of interfaces) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
+        }
+      }
+    }
+  }
+  throw new Error('IPv4アドレスが見つかりませんでした');
+}
