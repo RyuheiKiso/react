@@ -1,16 +1,12 @@
 export const trackInteraction = (event: Event, metadata?: any): void => {
-	try {
-		console.log('Tracking Event:', event.type, metadata);
-		fetch('https://tracking.example.com', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ event: event.type, metadata }),
-		}).catch((err) => {
-			console.error('Failed to send tracking data:', err);
-			throw new Error('トラッキングデータの送信に失敗しました');
-		});
-	} catch (err) {
-		console.error('Failed to track interaction:', err);
-		throw new Error('トラッキング処理に失敗しました');
-	}
+	// イベント情報をログに出力
+	console.log('Tracking Event:', event.type, metadata);
+	// 送信失敗時はログ出力のみ行い、UI影響を抑制
+	fetch('https://tracking.example.com', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ event: event.type, metadata }),
+	}).catch(err => {
+		console.error('Failed to send tracking data:', err);
+	});
 };
