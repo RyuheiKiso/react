@@ -1,4 +1,5 @@
-import { setItem, getItem } from '../utils/localStorageUtil';
+import os from 'os';
+import { setItem, getItem, getClientIp } from '../utils/localStorageUtil';
 
 const TIMEOUT_MS = 10000;
 const activeControllers: Record<string, AbortController> = {};
@@ -47,15 +48,4 @@ export function cancelRequest(requestId: string): void {
 // ログ出力（メトリクス）
 export function logRequestMetrics(endpoint: string, duration: number): void {
   console.info(`Request to ${endpoint} took ${duration}ms`);
-}
-
-// クライアントIP取得（localStorageUtil を利用）
-export async function getClientIp(): Promise<string> {
-  const cached = getItem<string>('clientIp');
-  if (cached) return cached;
-  const res = await fetch('https://api.ipify.org?format=json');
-  const json = await res.json();
-  const ip = json.ip;
-  setItem('clientIp', ip);
-  return ip;
 }
