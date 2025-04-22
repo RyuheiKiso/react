@@ -12,10 +12,9 @@ namespace Sample1.Shared.Database
 
         public DatabaseHandler(ConfigManager configManager)
         {
-            var cfg = configManager.LoadConfig("config/database.yaml");
-            var provider = cfg["provider"]?.ToString()?.ToLower() ?? "sqlserver";
-            var connStr = cfg["connectionString"]?.ToString() ?? throw new InvalidOperationException("connectionString not found in database.yaml");
-            dbConnection = provider switch
+            var dbConfig = configManager.GetDatabaseConfig();
+            var connStr = $"Host={dbConfig.Connection?.Host};Port={dbConfig.Connection?.Port};Database={dbConfig.Connection?.Database};Username={dbConfig.Connection?.Username};Password={dbConfig.Connection?.Password}";
+            dbConnection = dbConfig.Provider?.ToLower() switch
             {
                 "postgresql" or "postgres" => new NpgsqlConnection(connStr),
                 _ => new SqlConnection(connStr)

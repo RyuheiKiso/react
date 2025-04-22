@@ -24,7 +24,6 @@ namespace Sample1.Shared.Logging
             }
             catch (Exception ex)
             {
-                // デフォルト値を使用し、エラーをログに記録
                 logFilePath = "logs/app.log";
                 minLevel = LOG_LEVEL_INFO;
                 Console.Error.WriteLine($"[Logger Initialization Error] {ex.Message}");

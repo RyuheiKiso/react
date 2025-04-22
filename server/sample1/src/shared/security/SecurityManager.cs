@@ -12,10 +12,15 @@ namespace Sample1.Shared.Security
     {
         private const string AUTH_SECRET = "your-secret-key";
         private const int TOKEN_EXPIRY = 3600; // トークン有効期限（秒）
+        private readonly string authSecret;
+        private readonly int tokenExpiry;
 
         public SecurityManager(ConfigManager configManager)
         {
-            // ConfigManagerを使用して初期化処理を追加
+            var cfg = configManager.LoadConfig("config/security.yaml");
+            var authConfig = cfg["auth"] as Dictionary<string, object>;
+            authSecret = authConfig?["secretKey"]?.ToString() ?? AUTH_SECRET;
+            tokenExpiry = Convert.ToInt32(authConfig?["tokenExpirySeconds"] ?? TOKEN_EXPIRY);
             Console.WriteLine("SecurityManager initialized with ConfigManager.");
         }
 
@@ -27,7 +32,7 @@ namespace Sample1.Shared.Security
                 var validationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AUTH_SECRET)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSecret)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
@@ -44,13 +49,13 @@ namespace Sample1.Shared.Security
         public string GenerateToken(object payload)
         {
             var handler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AUTH_SECRET));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSecret));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(payload as IEnumerable<Claim>),
-                Expires = DateTime.UtcNow.AddSeconds(TOKEN_EXPIRY),
+                Expires = DateTime.UtcNow.AddSeconds(tokenExpiry),
                 SigningCredentials = credentials
             };
 
