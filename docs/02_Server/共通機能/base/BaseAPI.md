@@ -20,6 +20,7 @@ BaseAPIは、各共通機能（キャッシュ、データベース、ロギン�
 | networkService      | ネットワーク通信管理のインスタンスを保持する |
 | securityManager     | セキュリティ管理のインスタンスを保持する   |
 | configManager       | コンフィグ管理のインスタンスを保持する     |
+| ipManager           | IP情報管理のインスタンスを保持する         |
 
 ## 関数
 | 関数名              | 用途                                      | 引数          | 戻り値 |
@@ -34,6 +35,7 @@ BaseAPIは、各共通機能（キャッシュ、データベース、ロギン�
 - NetworkService
 - SecurityManager
 - ConfigManager
+- IpManager
 
 ## 事前条件
 - 各共通機能の設定がConfigManagerを通じて正しく初期化されていること
