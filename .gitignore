@@ -1,2 +1,4 @@
 server/sample1/bin/Debug/net8.0/*
 server/sample1/obj/Debug/net8.0/*
+server/sample1/bin/Release/net8.0/*
+server/sample1/obj/Release/net8.0/*
