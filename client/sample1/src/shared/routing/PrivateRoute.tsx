@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { getItem } from '../utils/localStorageUtil';
 import { trackInteraction } from '../utils/CommonTracking';
-import reportErrorToService from '../error/ErrorBoundary';
+// import reportErrorToService from '../error/ErrorBoundary';
 
 // 認証ルートのパス
 const AUTH_ROUTE = '/login';

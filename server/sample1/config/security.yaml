@@ -1,0 +1,13 @@
+# セキュリティ設定
+auth:
+  secretKey: "your-secret-key"
+  tokenExpirySeconds: 3600
+cors:
+  allowedOrigins:
+    - "http://localhost:3000"
+    - "https://example.com"
+  allowedMethods:
+    - GET
+    - POST
+    - PUT
+    - DELETE

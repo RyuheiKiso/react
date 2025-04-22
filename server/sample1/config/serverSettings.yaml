@@ -1,0 +1,16 @@
+# サーバー全体の設定
+server:
+  port: 8080
+  environment: development
+  maxConnections: 100
+  enableHttps: true
+
+logging:
+  level: info
+  filePath: logs/server.log
+
+security:
+  enableCors: true
+  allowedOrigins:
+    - "http://localhost:3000"
+    - "https://example.com"

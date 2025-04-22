@@ -1,13 +1,23 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// サービスをコンテナに追加
+// Swagger/OpenAPI の設定については https://aka.ms/aspnetcore/swashbuckle を参照
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// HTTP リクエストパイプラインの構成
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +25,22 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
-var summaries = new[]
+app.MapGet("/api/client-ip", (HttpContext context) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    // クライアントのIPアドレスを取得
+    var clientIp = context.Connection.RemoteIpAddress?.ToString();
+    return Results.Json(new { ip = clientIp });
+});
 
-app.MapGet("/weatherforecast", () =>
+// デバッグ環境の場合はポート5000でアプリを実行
+if (app.Environment.IsDevelopment())
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    app.Run("http://localhost:5000");
+}
+else
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    // 本番環境ではデフォルトのポートでアプリを実行
+    app.Run();
 }
