@@ -1,0 +1,7 @@
+# ログ設定
+filePath: logs/app.log
+minLevel: info
+rotation:
+  enable: true
+  maxSizeMB: 10
+  maxFiles: 5

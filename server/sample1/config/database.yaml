@@ -1,0 +1,11 @@
+# データベース設定
+provider: postgresql
+connection:
+  host: localhost
+  port: 5432
+  database: sampledb
+  username: user
+  password: pass
+retryPolicy:
+  maxRetries: 3
+  delaySeconds: 5
