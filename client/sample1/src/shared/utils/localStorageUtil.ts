@@ -59,23 +59,22 @@ export const clearStorage = (): void => {
 	}
 };
 
+// サーバーのベースURLを指定（環境変数や設定ファイルで管理することを推奨）
+const SERVER_BASE_URL = 'http://133.253.238.2:5001'; // 例: http://192.168.1.100:3000
+
 // クライアントのIPv4アドレスを取得する非同期関数
 // 戻り値：クライアントのIPv4アドレス
 export async function getClientIp(): Promise<string> {
-	// ネットワークインターフェース情報を取得
-	const networkInterfaces = os.networkInterfaces();
-	for (const interfaceName of Object.keys(networkInterfaces)) {
-		const interfaces = networkInterfaces[interfaceName];
-		if (interfaces) {
-			// 各インターフェースを確認
-			for (const iface of interfaces) {
-				// IPv4 かつ内部ネットワークでない場合にアドレスを返す
-				if (iface.family === 'IPv4' && !iface.internal) {
-					return iface.address;
-				}
-			}
+	try {
+		// サーバーサイドのエンドポイントを呼び出してIPアドレスを取得
+		const response = await fetch(`${SERVER_BASE_URL}/api/client-ip`);
+		if (!response.ok) {
+			throw new Error('Failed to fetch IP address from server');
 		}
+		const data = await response.json();
+		return data.ip;
+	} catch (err) {
+		console.error('Failed to get client IP address from server:', err);
+		throw new Error('クライアントのIPアドレスの取得に失敗しました');
 	}
-	// IPv4アドレスが見つからない場合は例外をスロー
-	throw new Error('IPv4アドレスが見つかりませんでした');
 }

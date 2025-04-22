@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sample1.Shared.Utils
 {
@@ -10,20 +10,10 @@ namespace Sample1.Shared.Utils
         private List<string> ipList = new List<string>();
         private string currentIp = DEFAULT_IP;
 
-        public string GetCurrentIp()
+        public string GetClientIp(HttpContext context)
         {
-            try
-            {
-                using var client = new HttpClient();
-                var response = client.GetStringAsync("https://api.ipify.org").Result;
-                currentIp = response;
-                return currentIp;
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error fetching IP: {ex.Message}");
-                return DEFAULT_IP;
-            }
+            var clientIp = context.Connection.RemoteIpAddress?.ToString();
+            return clientIp ?? DEFAULT_IP;
         }
 
         public void AddIpToList(string ip)
@@ -37,6 +27,19 @@ namespace Sample1.Shared.Utils
             {
                 Console.WriteLine($"IP already exists: {ip}");
             }
+        }
+    }
+
+    public static class IpManagerExtensions
+    {
+        public static void MapClientIpEndpoint(this WebApplication app)
+        {
+            app.MapGet("/api/client-ip", (HttpContext context) =>
+            {
+                var ipManager = context.RequestServices.GetRequiredService<IpManager>();
+                var clientIp = ipManager.GetClientIp(context);
+                return Results.Json(new { ip = clientIp });
+            });
         }
     }
 }

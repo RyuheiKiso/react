@@ -1,3 +1,5 @@
+using Sample1.Shared.Utils;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // サービスをコンテナに追加
@@ -15,7 +17,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+// IpManager をサービスとして登録
+builder.Services.AddSingleton<IpManager>();
+
 var app = builder.Build();
+
+// クライアントIPエンドポイントを登録
+app.MapClientIpEndpoint();
 
 // HTTP リクエストパイプラインの構成
 if (app.Environment.IsDevelopment())
@@ -26,13 +34,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-
-app.MapGet("/api/client-ip", (HttpContext context) =>
-{
-    // クライアントのIPアドレスを取得
-    var clientIp = context.Connection.RemoteIpAddress?.ToString();
-    return Results.Json(new { ip = clientIp });
-});
 
 // デバッグ環境の場合はポート5000でアプリを実行
 if (app.Environment.IsDevelopment())
