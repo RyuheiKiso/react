@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "React: Debug",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/client/sample1/src"
+    },
+    {
+      "name": ".NET: Launch",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-dotnet",
+      "program": "${workspaceFolder}/server/sample1/bin/Debug/net8.0/sample1.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/server/sample1",
+      "stopAtEntry": false
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Both",
+      "configurations": ["React: Debug", ".NET: Launch"]
+    }
+  ]
+}
