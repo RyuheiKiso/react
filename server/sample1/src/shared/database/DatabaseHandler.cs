@@ -2,7 +2,6 @@ using System;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Npgsql;
-using Sample1.Shared.Utils;
 
 namespace Sample1.Shared.Database
 {
@@ -10,11 +9,15 @@ namespace Sample1.Shared.Database
     {
         private readonly IDbConnection dbConnection;
 
-        public DatabaseHandler(ConfigManager configManager)
+        public DatabaseHandler(string provider, string host, int port, string database, string username, string password)
         {
-            var dbConfig = configManager.GetDatabaseConfig();
-            var connStr = $"Host={dbConfig.Connection?.Host};Port={dbConfig.Connection?.Port};Database={dbConfig.Connection?.Database};Username={dbConfig.Connection?.Username};Password={dbConfig.Connection?.Password}";
-            dbConnection = dbConfig.Provider?.ToLower() switch
+            if (string.IsNullOrEmpty(provider) || string.IsNullOrEmpty(host) || string.IsNullOrEmpty(database) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentException("Invalid connection parameters: None of the parameters can be null or empty.");
+            }
+
+            var connStr = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+            dbConnection = provider.ToLower() switch
             {
                 "postgresql" or "postgres" => new NpgsqlConnection(connStr),
                 _ => new SqlConnection(connStr)
