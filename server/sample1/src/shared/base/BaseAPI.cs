@@ -1,3 +1,4 @@
+using StackExchange.Redis;
 using Sample1.Shared.Cache;
 using Sample1.Shared.Database;
 using Sample1.Shared.Logging;
@@ -17,20 +18,15 @@ namespace Sample1.Shared.Base
         protected ConfigManager? ConfigManager { get; private set; }
 
         /// <summary>
-        /// デフォルトConfigManagerを使用してBaseAPIを初期化します。
-        /// </summary>
-        public BaseAPI() : this(new ConfigManager()) { }
-        
-        /// <summary>
         /// 各種サービスをConfigManager経由で初期化する。
         /// </summary>
-        public BaseAPI(ConfigManager configManager)
+        public BaseAPI(ConfigManager configManager, IDatabase redisDb, TimeSpan cacheExpiry, string dbProvider, string dbHost, int dbPort, string dbName, string dbUser, string dbPassword, string logFilePath, HttpClient httpClient)
         {
             ConfigManager = configManager;
-            CacheService = new CacheService(configManager);
-            DatabaseHandler = new DatabaseHandler(configManager);
-            Logger = new Logger(configManager);
-            NetworkService = new NetworkService(configManager);
+            CacheService = new CacheService(redisDb, cacheExpiry);
+            DatabaseHandler = new DatabaseHandler(dbProvider, dbHost, dbPort, dbName, dbUser, dbPassword);
+            Logger = new Logger(logFilePath);
+            NetworkService = new NetworkService(httpClient);
             SecurityManager = new SecurityManager(configManager);
         }
     }
