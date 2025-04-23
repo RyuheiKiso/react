@@ -4,26 +4,22 @@ using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using Grpc.Net.Client;
-using Sample1.Shared.Utils;
 
 namespace Sample1.Shared.Network
 {
     public class NetworkService
     {
         private const int DEFAULT_TIMEOUT = 30; // デフォルトのタイムアウト（秒）
+        private readonly HttpClient _httpClient;
 
-        public NetworkService(ConfigManager configManager)
+        public NetworkService(HttpClient httpClient)
         {
-            // ConfigManagerを使用して初期化処理を追加
-            Console.WriteLine("NetworkService initialized with ConfigManager.");
+            _httpClient = httpClient;
+            _httpClient.Timeout = TimeSpan.FromSeconds(DEFAULT_TIMEOUT);
         }
 
         public void SendRequest(string endpoint, string payload, string method = "GET")
         {
-            using var client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(DEFAULT_TIMEOUT);
-
             HttpRequestMessage request = new HttpRequestMessage(new HttpMethod(method), endpoint)
             {
                 Content = new StringContent(payload, Encoding.UTF8, "application/json")
@@ -31,20 +27,13 @@ namespace Sample1.Shared.Network
 
             try
             {
-                var response = client.Send(request);
+                var response = _httpClient.Send(request);
                 Console.WriteLine($"Response: {response.StatusCode}");
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error during request: {ex.Message}");
             }
-        }
-
-        public void SendGrpcRequest(string endpoint, string payload)
-        {
-            using var channel = GrpcChannel.ForAddress(endpoint);
-            // gRPC通信の実装例
-            Console.WriteLine("gRPC request sent to " + endpoint);
         }
 
         public async Task SendWebSocketRequest(string endpoint, string payload)
