@@ -31,10 +31,12 @@ SecurityManager.cs
 | updateIPWhitelist        | 許可IPアドレスのホワイトリストを更新する         | ipList: string[]    | void   |
 
 ## 依存関係
-.NET Coreのセキュリティライブラリ、JWTライブラリ、ロギングライブラリ
+- 他の共通機能（例: Logger, ConfigManager）への依存は持たない設計とする。
+- BaseAPIを通じて利用される場合は例外とする。
 
 ## 事前条件
 - 設定値の取得はConfigManagerを使用して行い、必要なセキュリティ設定が初期化されていること
+- 他の共通機能に依存しないこと
 
 ## 事後条件
 不正アクセス防止およびセキュリティインシデントの早期検出が実現される
