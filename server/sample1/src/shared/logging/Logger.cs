@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Sample1.Shared.Utils;
+using System.Collections.Generic;
 
 namespace Sample1.Shared.Logging
 {
@@ -14,26 +14,15 @@ namespace Sample1.Shared.Logging
         private readonly string minLevel;
         private readonly Dictionary<string, int> levelPriority;
 
-        public Logger(ConfigManager configManager)
+        public Logger(string logFilePath, string minLevel = LOG_LEVEL_INFO)
         {
-            try
-            {
-                var cfg = configManager.LoadConfig("config/logging.yaml");
-                logFilePath = cfg["filePath"]?.ToString() ?? "logs/app.log";
-                minLevel = cfg["minLevel"]?.ToString() ?? LOG_LEVEL_INFO;
-            }
-            catch (Exception ex)
-            {
-                logFilePath = "logs/app.log";
-                minLevel = LOG_LEVEL_INFO;
-                Console.Error.WriteLine($"[Logger Initialization Error] {ex.Message}");
-            }
-
+            this.logFilePath = logFilePath;
+            this.minLevel = minLevel;
             levelPriority = new Dictionary<string, int>
             {
-                {LOG_LEVEL_ERROR, 3},
-                {LOG_LEVEL_INFO, 2},
-                {LOG_LEVEL_DEBUG, 1}
+                { LOG_LEVEL_ERROR, 0 },
+                { LOG_LEVEL_INFO, 1 },
+                { LOG_LEVEL_DEBUG, 2 }
             };
         }
 
