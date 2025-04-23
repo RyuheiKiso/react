@@ -27,8 +27,7 @@ IpManager.cs
 | isIpAllowed         | 指定したIPアドレスが許可されているか確認する | ip: string    | bool   |
 
 ## 依存関係
-- ConfigManager
-- Logger
+- 他の共通機能への依存はありません。
 
 ## 事前条件
 - ConfigManagerを通じてIPリストが初期化されていること
