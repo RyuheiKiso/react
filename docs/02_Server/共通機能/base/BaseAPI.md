@@ -29,16 +29,12 @@ BaseAPIは、各共通機能（キャッシュ、データベース、ロギン�
 | getService<T>       | 指定した共通機能のインスタンスを取得する    | serviceType: T | T      |
 
 ## 依存関係
-- CacheService
-- DatabaseHandler
-- Logger
-- NetworkService
-- SecurityManager
-- ConfigManager
-- IpManager
+- 各共通機能はBaseAPIを通じて利用されるが、共通機能同士の直接的な参照や依存関係は持たないように設計されています。
+- BaseAPIは例外として、各共通機能を統一的に参照します。
 
 ## 事前条件
 - 各共通機能の設定がConfigManagerを通じて正しく初期化されていること
+- 共通機能同士の依存関係がないことを確認する
 
 ## 事後条件
 - 各共通機能のインスタンスが正しく初期化され、個別のAPIから利用可能になる
