@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Sample1.Shared.Utils
 {
     public class IpManager
     {
         private const string DEFAULT_IP = "127.0.0.1";
         private List<string> ipList = new List<string>();
-        private string currentIp = DEFAULT_IP;
 
         public string GetClientIp(HttpContext context)
         {
