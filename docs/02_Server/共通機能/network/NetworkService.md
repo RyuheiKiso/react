@@ -30,10 +30,11 @@ NetworkService.cs
 | fallbackToAlternateEndpoint | 通信失敗時に予備のエンドポイントへ切り替える処理を実施する | currentEndpoint: string, alternateEndpoints: string[] | Response |
 
 ## 依存関係
-HTTPクライアントライブラリ、gRPCライブラリ、WebSocketライブラリ
+- 他の共通機能への依存はありません。
 
 ## 事前条件
 - ConfigManagerを使用して各APIのエンドポイント設定と認証情報が取得済みであること
+- 他の共通機能に依存しないこと
 
 ## 事後条件
 外部サービスとの通信が安定して実行される
