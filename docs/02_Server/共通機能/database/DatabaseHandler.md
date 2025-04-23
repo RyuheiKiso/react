@@ -32,10 +32,11 @@ DatabaseHandler.cs
 | backupDatabase          | データベースのバックアッププロセスを実行し、指定場所に保存する | backupDestination: string, options?: object | void         |
 
 ## 依存関係
-ADO.NET、ORMライブラリ（例: Entity Framework Core）
+- 他の共通機能への依存はありません。
 
 ## 事前条件
 - 接続設定はConfigManagerを使用して取得され、接続文字列が正しく設定されていること
+- 他の共通機能に依存しないこと
 
 ## 事後条件
 クエリ実行およびトランザクション管理が正確に行われる
